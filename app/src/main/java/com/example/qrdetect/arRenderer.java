@@ -68,12 +68,13 @@ public class arRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
-        elevation = calcDist(MainActivity.Companion.getResultPoints()[2], MainActivity.Companion.getResultPoints()[6], MainActivity.Companion.getResultPoints()[3], MainActivity.Companion.getResultPoints()[7])/200;
+        elevation = 1/calcDist(MainActivity.Companion.getResultPoints()[2], MainActivity.Companion.getResultPoints()[6], MainActivity.Companion.getResultPoints()[3], MainActivity.Companion.getResultPoints()[7]);
+        System.out.println(elevation);
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
 
         // Set the camera position
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, elevation, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, elevation*2500, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         // Create a rotation and translation for the cube
         Matrix.setIdentityM(mRotationMatrix, 0);
         //move the cube up/down and left/right
