@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.BarcodeFormat
@@ -53,7 +54,16 @@ class MainActivity : AppCompatActivity(), BarcodeResultListener, SensorEventList
     }
 
     override fun onBarcodeResult(result: Result): Boolean {
-        resultPoints = result.resultPoints.flatMap { listOf(it.x, it.y) }.toFloatArray()
+        //resultPoints = result.resultPoints.flatMap { listOf(it.x, it.y) }.toFloatArray()
+        resultPoints[0] = result.resultPoints[0].x
+        resultPoints[1] = result.resultPoints[0].y
+        resultPoints[2] = result.resultPoints[1].x
+        resultPoints[3] = result.resultPoints[1].y
+        resultPoints[4] = result.resultPoints[2].x
+        resultPoints[5] = result.resultPoints[2].y
+        resultPoints[6] = result.resultPoints[3].x
+        resultPoints[7] = result.resultPoints[3].y
+
         return false
     }
 
@@ -77,7 +87,7 @@ class MainActivity : AppCompatActivity(), BarcodeResultListener, SensorEventList
 
 
     companion object{
-        var resultPoints = floatArrayOf(0f,0f,0f,0f,0f,0f,0f,0f)
+        var resultPoints = FloatArray(8)
         var inclinationZ = 0
     }
 

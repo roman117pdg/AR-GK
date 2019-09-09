@@ -51,8 +51,19 @@ public class arRenderer implements GLSurfaceView.Renderer {
         float elevation = (1 / dist) * 2000;
 
         //WSPÓŁRZĘDNE ŚRODKA QRA
-        float QRcenterY = (points[2] + points[4])/2f;
-        float QRcenterX = (points[1] + points[3])/2f;
+        float QRmaxY = Math.max(Math.max(points[4], points[6]),(Math.max(points[0], points[2])));
+        float QRmaxX = Math.max(Math.max(points[1], points[3]),(Math.max(points[5], points[7])));
+        float QRminY = Math.min(Math.min(points[4], points[6]),(Math.min(points[0], points[2])));
+        float QRminX = Math.min(Math.min(points[1], points[3]),(Math.min(points[5], points[7])));
+
+        float QRcenterY=(QRmaxY+QRminY)/2f;
+        float QRcenterX=(QRmaxX+QRminX)/2f;
+
+        float vec1x = 0;
+        float vec1y = -QRcenterY;
+
+        float vec2x = points[3]-QRcenterX;
+        float vec2y = QRcenterY-points[2];
 
         //ZAŁĄCZENIE GLA
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
@@ -69,8 +80,12 @@ public class arRenderer implements GLSurfaceView.Renderer {
         float angleVX = MainActivity.Companion.getInclinationZ();
         Matrix.rotateM(mRotationMatrix, 0, 90-angleVX, 1.0f, 0,0);
 
-        float angleVY = 0; //calcAngleY(1,1,1,1);
-        Matrix.rotateM(mRotationMatrix, 0, angleVY, 0, 1.0f, 0);
+        float angleVY = calcAngleY(vec1x, vec1y, vec2x, vec2y);
+        if(QRcenterX<points[7])
+        {
+            angleVY=360-angleVY;
+        }
+        Matrix.rotateM(mRotationMatrix, 0, 360-angleVY, 0, 1.0f, 0);
 
         //PIERDY
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mRotationMatrix, 0);
@@ -92,6 +107,7 @@ public class arRenderer implements GLSurfaceView.Renderer {
         float lenB = (float)Math.sqrt(x2*x2+y2*y2);
         float cosa = AoB/(lenA*lenB);
         float res = (float) Math.toDegrees(Math.acos(cosa));
+
         return res;
     }
 }
