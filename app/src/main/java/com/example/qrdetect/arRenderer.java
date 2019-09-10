@@ -44,7 +44,6 @@ public class arRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
-//        Log.i("height:", String.valueOf(mHeight));
         //PUNKTY NAROŻNIKÓW QRA
         float[] points = MainActivity.Companion.getResultPoints();
 
@@ -57,7 +56,6 @@ public class arRenderer implements GLSurfaceView.Renderer {
             dist = 500;
         }
         float elevation = (1 / dist) * 2000;
-        //Log.i("elevation:", String.valueOf(elevation));
 
         //WSPÓŁRZĘDNE ŚRODKA QRA
         float QRmaxY = Math.max(Math.max(points[4], points[6]),(Math.max(points[0], points[2])));
@@ -81,8 +79,6 @@ public class arRenderer implements GLSurfaceView.Renderer {
         //ZAŁĄCZENIE GLA
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
-        Log.i("X:", String.valueOf(normQRcenterX));
-        Log.i("normQRcenterY:", String.valueOf(normQRcenterY));
 
         //KAMERKA
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, elevation, normQRcenterX*elevation/3.6f, normQRcenterY*elevation/1.9f, 0f, 0f, 1.0f, 0.0f);
