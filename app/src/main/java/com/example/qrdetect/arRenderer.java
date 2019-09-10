@@ -4,6 +4,7 @@ import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -43,12 +44,20 @@ public class arRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
 
+//        Log.i("height:", String.valueOf(mHeight));
         //PUNKTY NAROŻNIKÓW QRA
         float[] points = MainActivity.Companion.getResultPoints();
 
         //ODLEGŁOŚĆ DO KAMERKI
-        float dist = calcDist(points[2],points[3], points[6], points[7]);
+        float dist;
+        try {
+            dist = calcDist(points[2],points[3], points[6], points[7]);
+        }catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("Zjebana tablica");
+            dist = 500;
+        }
         float elevation = (1 / dist) * 2000;
+        //Log.i("elevation:", String.valueOf(elevation));
 
         //WSPÓŁRZĘDNE ŚRODKA QRA
         float QRmaxY = Math.max(Math.max(points[4], points[6]),(Math.max(points[0], points[2])));
@@ -56,8 +65,12 @@ public class arRenderer implements GLSurfaceView.Renderer {
         float QRminY = Math.min(Math.min(points[4], points[6]),(Math.min(points[0], points[2])));
         float QRminX = Math.min(Math.min(points[1], points[3]),(Math.min(points[5], points[7])));
 
-        float QRcenterY=(QRmaxY+QRminY)/2f;
-        float QRcenterX=(QRmaxX+QRminX)/2f;
+        float QRcenterY = (QRmaxY+QRminY)/2f;
+        float normQRcenterY = QRcenterY/1280;
+        normQRcenterY = (normQRcenterY<=0.5f) ? (normQRcenterY*2)-1 : (normQRcenterY - 0.5f)*2;
+        float QRcenterX = (QRmaxX+QRminX)/2f;
+        float normQRcenterX = QRcenterX/720;
+        normQRcenterX = (normQRcenterX<=0.5f) ? (normQRcenterX*2)-1 : (normQRcenterX - 0.5f)*2;
 
         float vec1x = 0;
         float vec1y = -QRcenterY;
@@ -68,9 +81,11 @@ public class arRenderer implements GLSurfaceView.Renderer {
         //ZAŁĄCZENIE GLA
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
+        Log.i("X:", String.valueOf(normQRcenterX));
+        Log.i("normQRcenterY:", String.valueOf(normQRcenterY));
 
         //KAMERKA
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0f, elevation, -((1/QRcenterX)*1000)+2, -((1/QRcenterY)*1000)+2, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, elevation, normQRcenterX*elevation/3.6f, normQRcenterY*elevation/1.9f, 0f, 0f, 1.0f, 0.0f);
 
         //PIERDY
         Matrix.setIdentityM(mRotationMatrix, 0);

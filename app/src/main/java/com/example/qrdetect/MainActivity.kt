@@ -1,6 +1,7 @@
 package com.example.qrdetect
 
 import android.content.Context
+import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -10,12 +11,14 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.kroegerama.kaiteki.bcode.BarcodeResultListener
 import com.kroegerama.kaiteki.bcode.ui.BarcodeFragment
 import kotlin.math.acos
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -54,15 +57,17 @@ class MainActivity : AppCompatActivity(), BarcodeResultListener, SensorEventList
     }
 
     override fun onBarcodeResult(result: Result): Boolean {
-        //resultPoints = result.resultPoints.flatMap { listOf(it.x, it.y) }.toFloatArray()
-        resultPoints[0] = result.resultPoints[0].x
-        resultPoints[1] = result.resultPoints[0].y
-        resultPoints[2] = result.resultPoints[1].x
-        resultPoints[3] = result.resultPoints[1].y
-        resultPoints[4] = result.resultPoints[2].x
-        resultPoints[5] = result.resultPoints[2].y
-        resultPoints[6] = result.resultPoints[3].x
-        resultPoints[7] = result.resultPoints[3].y
+//        resultPoints = setResult(result,1280,720,0)
+//        val layout : FrameLayout
+//        layout = findViewById(R.id.fragment_container)
+        resultPoints[0] = result.resultPoints[0].x //*layout.width/720
+        resultPoints[1] = result.resultPoints[0].y //*layout.height/1280
+        resultPoints[2] = result.resultPoints[1].x //*layout.width/720
+        resultPoints[3] = result.resultPoints[1].y //*layout.height/1280
+        resultPoints[4] = result.resultPoints[2].x //*layout.width/720
+        resultPoints[5] = result.resultPoints[2].y //*layout.height/1280
+        resultPoints[6] = result.resultPoints[3].x //*layout.width/720
+        resultPoints[7] = result.resultPoints[3].y //*layout.height/1280
 
         return false
     }
@@ -89,6 +94,38 @@ class MainActivity : AppCompatActivity(), BarcodeResultListener, SensorEventList
     companion object{
         var resultPoints = FloatArray(8)
         var inclinationZ = 0
+    }
+
+
+    fun setResult(result: Result, imageWidth: Int, imageHeight: Int, imageRotation: Int):FloatArray {
+        val localMatrix = createMatrix(imageWidth.toFloat(), imageHeight.toFloat(), imageRotation)
+
+        val resultPoints1 = result.resultPoints.flatMap { listOf(it.x, it.y) }.toFloatArray()
+        localMatrix.mapPoints(resultPoints1)
+
+        return resultPoints1
+    }
+
+    private fun createMatrix(imageWidth: Float, imageHeight: Float, imageRotation: Int) = Matrix().apply {
+
+        val layout : FrameLayout
+        layout = findViewById(R.id.fragment_container)
+        preTranslate((layout.width - imageWidth) / 2f, (layout.height - imageHeight) / 2f)
+        preRotate(imageRotation.toFloat(), imageWidth / 2f, imageHeight / 2f)
+
+        val wScale: Float
+        val hScale: Float
+
+        if (imageRotation % 180 == 0) {
+            wScale = layout.width.toFloat() / imageWidth
+            hScale = layout.height.toFloat() / imageHeight
+        } else {
+            wScale = layout.height.toFloat() / imageWidth
+            hScale = layout.width.toFloat() / imageHeight
+        }
+
+        val scale = max(wScale, hScale)
+        preScale(scale, scale, imageWidth / 2f, imageHeight / 2f)
     }
 
 }

@@ -60,7 +60,7 @@ class ResultPointView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun setResult(result: Result, imageWidth: Int, imageHeight: Int, imageRotation: Int):FloatArray {
+    fun setResult(result: Result, imageWidth: Int, imageHeight: Int, imageRotation: Int) {
        // if (!showResultPoints) return resultPoints
         val localMatrix = createMatrix(imageWidth.toFloat(), imageHeight.toFloat(), imageRotation)
 
@@ -71,8 +71,18 @@ class ResultPointView @JvmOverloads constructor(
             rect = RectF(0f, 0f, imageWidth.toFloat(), imageHeight.toFloat())
             localMatrix.mapRect(rect)
         }
-        return resultPoints
         invalidate()
+    }
+
+    fun getResult(result: Result, imageWidth: Int, imageHeight: Int, imageRotation: Int):FloatArray {
+        // if (!showResultPoints) return resultPoints
+        val localMatrix = createMatrix(imageWidth.toFloat(), imageHeight.toFloat(), imageRotation)
+
+        val resultPoints1 = result.resultPoints.flatMap { listOf(it.x, it.y) }.toFloatArray()
+        localMatrix.mapPoints(resultPoints1)
+
+        invalidate()
+        return resultPoints1
     }
 
     public fun createMatrix(imageWidth: Float, imageHeight: Float, imageRotation: Int) = Matrix().apply {
@@ -95,7 +105,7 @@ class ResultPointView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        //if (showResultPoints) canvas.drawPoints(resultPoints, pPoints)
+//        if (showResultPoints) canvas.drawPoints(resultPoints, pPoints)
 
        // if (BuildConfig.DEBUG) canvas.drawRect(rect, pPoints)
         }

@@ -14,10 +14,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.camera.core.*
 import androidx.lifecycle.LifecycleOwner
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.DecodeHintType
-import com.google.zxing.MultiFormatReader
-import com.google.zxing.Result
+import com.google.zxing.*
 import com.kroegerama.kaiteki.bcode.*
 import com.kroegerama.kaiteki.bcode.R
 import kotlin.math.max
@@ -62,14 +59,13 @@ class BarcodeView @JvmOverloads constructor(
     }
 
     override fun onResult(result: Result, imageWidth: Int, imageHeight: Int, imageRotation: Int) {
-        val resultPoints = resultView.setResult(result, imageWidth, imageHeight, imageRotation)
-//        print("WhatResultPoints:")
-//        for (i in resultPoints.indices) {
-//            val resultPoint = resultPoints[i]
-//            print(" [$i]:")
-//            print(resultPoint)
-//        }
-//        print("\n")
+        resultView.setResult(result, imageWidth, imageHeight, imageRotation)
+//        val floatPoints = resultView.getResult(result, imageWidth, imageHeight, imageRotation)
+//        val resultPoints = Array(4){ResultPoint(floatPoints[0],floatPoints[1]);
+//            ResultPoint(floatPoints[2],floatPoints[3]);
+//            ResultPoint(floatPoints[4],floatPoints[5]);
+//            ResultPoint(floatPoints[6],floatPoints[7])}
+//            result.addResultPoints(resultPoints)
         val d = resultDebouncer {
             listener?.onBarcodeResult(result)
         }
