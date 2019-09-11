@@ -105,8 +105,5 @@ class ResultPointView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-//        if (showResultPoints) canvas.drawPoints(resultPoints, pPoints)
-
-       // if (BuildConfig.DEBUG) canvas.drawRect(rect, pPoints)
         }
 }

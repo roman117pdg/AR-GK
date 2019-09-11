@@ -52,7 +52,7 @@ public class arRenderer implements GLSurfaceView.Renderer {
         try {
             dist = calcDist(points[2],points[3], points[6], points[7]);
         }catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("Zjebana tablica");
+            System.out.println("Result Points from QR detector are out of range!");
             dist = 500;
         }
         float elevation = (1 / dist) * 2000;
