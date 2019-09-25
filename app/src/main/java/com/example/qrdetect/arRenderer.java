@@ -22,12 +22,14 @@ public class arRenderer implements GLSurfaceView.Renderer {
     private final float[] mRotationMatrix = new float[16];
 
     public Czajnik mCzajnik;
+    public Ludzik mLudzik;
 
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         GLES30.glClearColor(0f, 0f, 0f, 0f);
         mCzajnik = new Czajnik();
+        mLudzik = new Ludzik();
     }
 
     @Override
@@ -46,6 +48,8 @@ public class arRenderer implements GLSurfaceView.Renderer {
 
         //PUNKTY NAROŻNIKÓW QRA
         float[] points = MainActivity.Companion.getResultPoints();
+        String val_str = MainActivity.Companion.getString_val();
+        Log.e("string",val_str);
 
         //ODLEGŁOŚĆ DO KAMERKI
         float dist;
@@ -103,7 +107,10 @@ public class arRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
         //RYSOWANKO
-        mCzajnik.draw(mMVPMatrix);
+        if(!val_str.equals("Witaj w Wikipedii!")){
+            mCzajnik.draw(mMVPMatrix);
+        }else{
+        mLudzik.draw(mMVPMatrix);}
     }
 
     private float calcDist(float x1, float y1, float x2, float y2)

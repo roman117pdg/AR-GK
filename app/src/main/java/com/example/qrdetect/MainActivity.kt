@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity(), BarcodeResultListener, SensorEventList
         resultPoints[5] = result.resultPoints[2].y
         resultPoints[6] = result.resultPoints[3].x
         resultPoints[7] = result.resultPoints[3].y
+        string_val = result.toString()
 
         return false
     }
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity(), BarcodeResultListener, SensorEventList
 
     companion object{
         var resultPoints = FloatArray(8)
+        var string_val = ""
         var inclinationZ = 0
     }
 }
